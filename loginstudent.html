@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Login</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-container h2 {
+            text-align: center;
+            color: #2980b9;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input[type="text"], input[type="password"] {
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #f9f9f9;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 12px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1c5980;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 12px;
+            margin-top: 20px;
+            color: #888;
+        }
+
+        /* Responsive design */
+        @media screen and (max-width: 768px) {
+            .login-container {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            input[type="text"], input[type="password"] {
+                font-size: 16px;
+            }
+
+            button {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>Student Login</h2>
+
+        <form method="post">
+            {% csrf_token %}
+            <label for="username">Username:</label>
+            <input type="text" name="username" required placeholder="Enter your username">
+
+            <label for="password">Password:</label>
+            <input type="password" name="password" required placeholder="Enter your password">
+
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <div class="footer-note">
+        &copy; {{ now|date:"Y" }} College Attendance Tracker System
+    </div>
+
+</body>
+</html>

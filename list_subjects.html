@@ -1,0 +1,369 @@
+{% extends 'base.html' %}
+
+{% block title %}List of Subjects - School Management System{% endblock %}
+
+{% block page_title %}List of Subjects{% endblock %}
+
+{% block extra_css %}
+<style>
+    .subjects-table {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .table th {
+        background-color: #007bff;
+        color: white;
+        font-weight: 600;
+        border: none;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    
+    .table td {
+        vertical-align: middle;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+        transform: scale(1.001);
+        transition: all 0.2s ease;
+    }
+    
+    .action-buttons {
+        white-space: nowrap;
+    }
+    
+    .btn-action {
+        padding: 6px 12px;
+        font-size: 12px;
+        margin-right: 5px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-action:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        color: #dee2e6;
+    }
+    
+    .empty-state h4 {
+        color: #495057;
+        margin-bottom: 15px;
+    }
+    
+    .stats-cards {
+        margin-bottom: 25px;
+    }
+    
+    .stat-card {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+    
+    .subject-code {
+        background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        color: #1565c0;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        display: inline-block;
+        min-width: 80px;
+        text-align: center;
+    }
+    
+    .subject-name {
+        font-weight: 500;
+        color: #495057;
+    }
+    
+    .search-filter-section {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+    
+    .search-input {
+        border: 2px solid #e9ecef;
+        border-radius: 25px;
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    
+    .search-input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    .table-info {
+        background-color: #e3f2fd;
+        border-left: 4px solid #2196f3;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+    }
+    
+    .quick-actions-card {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+    
+    .badge-counter {
+        background-color: #28a745;
+        color: white;
+        border-radius: 15px;
+        padding: 4px 8px;
+        font-size: 0.75rem;
+        margin-left: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+
+
+<!-- Search and Filter Section -->
+<div class="search-filter-section">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0">
+                    <i class="fas fa-search text-muted"></i>
+                </span>
+                <input type="text" 
+                       class="form-control search-input border-start-0" 
+                       id="searchSubjects" 
+                       placeholder="Search subjects by code or name..."
+                       onkeyup="filterSubjects()">
+            </div>
+        </div>
+        <div class="col-md-6 text-end">
+            <span class="text-muted">
+                <i class="fas fa-info-circle me-1"></i>
+                Showing <span id="visibleCount">{{ subjects|length }}</span> of {{ subjects|length }} subject{{ subjects|length|pluralize }}
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Subjects Table -->
+<div class="subjects-table">
+    {% if subjects %}
+        <!-- Table Info -->
+       
+        <div class="table-responsive">
+            <table class="table table-hover mb-0" id="subjectsTable">
+                <thead>
+                    <tr>
+                        <th scope="col" style="width: 20%;">
+                            <i class="fas fa-hashtag me-1"></i>
+                            Subject Code
+                        </th>
+                        <th scope="col" style="width: 60%;">
+                            <i class="fas fa-book me-1"></i>
+                            Subject Name
+                        </th>
+                        <th scope="col" class="text-center" style="width: 20%;">
+                            <i class="fas fa-cogs me-1"></i>
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for subject in subjects %}
+                        <tr class="subject-row">
+                            <td>
+                                <span class="subject-code">{{ subject.subject_code }}</span>
+                            </td>
+                            <td>
+                                <div class="subject-name">{{ subject.subject_name }}</div>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    Added recently
+                                </small>
+                            </td>
+                            <td class="text-center">
+                                <div class="action-buttons">
+                                    <a href="{% url 'update_subject' subject.id %}" 
+                                       class="btn btn-outline-primary btn-sm btn-action" 
+                                       title="Edit Subject"
+                                       data-bs-toggle="tooltip">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'delete_subject' subject.id %}" 
+                                       class="btn btn-outline-danger btn-sm btn-action" 
+                                       title="Delete Subject"
+                                       data-bs-toggle="tooltip"
+                                       onclick="return confirmDelete('{{ subject.subject_name }}', '{{ subject.subject_code }}')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-book-open"></i>
+            <h4>No Subjects Found</h4>
+            <p class="mb-4">You haven't added any subjects to the system yet.</p>
+            <div>
+                <a href="{% url 'add_subject' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-plus me-2"></i>
+                    Add Your First Subject
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add active class to the current menu item
+        const listSubjectsLink = document.querySelector('a[href*="list_subjects"]');
+        if (listSubjectsLink) {
+            listSubjectsLink.classList.add('active');
+        }
+        
+        // Auto-expand the subjects submenu
+        const subjectsCollapse = document.getElementById('subjectsCollapse');
+        if (subjectsCollapse) {
+            subjectsCollapse.classList.add('show');
+            const subjectsToggle = document.querySelector('[data-bs-toggle="collapse"][href="#subjectsCollapse"]');
+            if (subjectsToggle) {
+                subjectsToggle.classList.remove('collapsed');
+                subjectsToggle.setAttribute('aria-expanded', 'true');
+            }
+        }
+        
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Add click effect to subject codes
+        document.querySelectorAll('.subject-code').forEach(function(element) {
+            element.addEventListener('click', function() {
+                this.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 200);
+            });
+        });
+    });
+    
+    // Search and filter functionality
+    function filterSubjects() {
+        const searchTerm = document.getElementById('searchSubjects').value.toLowerCase();
+        const rows = document.querySelectorAll('.subject-row');
+        let visibleCount = 0;
+        
+        rows.forEach(function(row) {
+            const subjectCode = row.querySelector('.subject-code').textContent.toLowerCase();
+            const subjectName = row.querySelector('.subject-name').textContent.toLowerCase();
+            
+            if (subjectCode.includes(searchTerm) || subjectName.includes(searchTerm)) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        
+        document.getElementById('visibleCount').textContent = visibleCount;
+        
+        // Show/hide empty message
+        const tableBody = document.querySelector('#subjectsTable tbody');
+        const existingEmptyRow = tableBody.querySelector('.empty-search-row');
+        
+        if (visibleCount === 0 && searchTerm !== '') {
+            if (!existingEmptyRow) {
+                const emptyRow = document.createElement('tr');
+                emptyRow.className = 'empty-search-row';
+                emptyRow.innerHTML = `
+                    <td colspan="3" class="text-center py-4">
+                        <i class="fas fa-search text-muted mb-2" style="font-size: 2rem;"></i>
+                        <div>No subjects found matching "<strong>${searchTerm}</strong>"</div>
+                        <small class="text-muted">Try adjusting your search terms</small>
+                    </td>
+                `;
+                tableBody.appendChild(emptyRow);
+            }
+        } else if (existingEmptyRow) {
+            existingEmptyRow.remove();
+        }
+    }
+    
+    // Enhanced delete confirmation
+    function confirmDelete(subjectName, subjectCode) {
+        const message = `Are you sure you want to delete the subject "${subjectName}" (${subjectCode})?\n\nThis action cannot be undone and may affect students enrolled in this subject.`;
+        return confirm(message);
+    }
+    
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Ctrl/Cmd + K to focus search
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            document.getElementById('searchSubjects').focus();
+        }
+        
+        // Escape to clear search
+        if (e.key === 'Escape') {
+            const searchInput = document.getElementById('searchSubjects');
+            if (searchInput.value) {
+                searchInput.value = '';
+                filterSubjects();
+                searchInput.blur();
+            }
+        }
+    });
+</script>
+{% endblock %}

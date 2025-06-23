@@ -1,0 +1,458 @@
+{% extends 'base.html' %}
+
+{% block title %}Update Lecturer - School Management System{% endblock %}
+
+{% block page_title %}Update Lecturer Information{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .form-header {
+        border-bottom: 3px solid #007bff;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .form-header h3 {
+        color: #2c3e50;
+        margin: 0;
+        font-weight: 600;
+    }
+    
+    .form-header p {
+        color: #6c757d;
+        margin: 5px 0 0 0;
+        font-size: 0.95rem;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+    }
+    
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        padding: 12px 15px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    .form-control:invalid {
+        border-color: #dc3545;
+    }
+    
+    .form-control:valid {
+        border-color: #28a745;
+    }
+    
+    .input-group-text {
+        background-color: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-right: none;
+        color: #6c757d;
+    }
+    
+    .input-group .form-control {
+        border-left: none;
+    }
+    
+    .input-group:focus-within .input-group-text {
+        border-color: #007bff;
+        background-color: #e7f3ff;
+        color: #007bff;
+    }
+    
+    .btn-update {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        border: none;
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+    }
+    
+    .btn-update:hover {
+        background: linear-gradient(135deg, #0056b3, #004085);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+    }
+    
+    .btn-update:active {
+        transform: translateY(0);
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .help-text {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+    
+    .required-indicator {
+        color: #dc3545;
+        font-weight: bold;
+    }
+    
+    .current-info {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .current-info h6 {
+        color: #495057;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+    
+    .current-info .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .current-info .info-item:last-child {
+        border-bottom: none;
+    }
+    
+    .current-info .info-label {
+        font-weight: 500;
+        color: #6c757d;
+    }
+    
+    .current-info .info-value {
+        color: #007bff;
+        font-family: monospace;
+        background-color: white;
+        padding: 2px 8px;
+        border-radius: 4px;
+        border: 1px solid #dee2e6;
+    }
+    
+    .lecturer-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 32px;
+        font-weight: bold;
+        margin: 0 auto 15px;
+    }
+    
+    .password-toggle {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .password-toggle:hover {
+        color: #007bff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Current Lecturer Info -->
+
+
+<!-- Form Container -->
+<div class="form-container">
+    <div class="form-header">
+        <h3>
+            <i class="fas fa-user-edit text-primary me-2"></i>
+            Update Lecturer Information
+        </h3>
+        <p>Modify the lecturer details below and click update to save changes</p>
+    </div>
+    
+    <!-- Update Form -->
+    <form method="POST" id="updateForm">
+        {% csrf_token %}
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="staff_id" class="form-label">
+                        <i class="fas fa-id-badge me-1"></i>
+                        Staff ID <span class="required-indicator">*</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-hashtag"></i>
+                        </span>
+                        <input type="text" 
+                               class="form-control" 
+                               id="staff_id" 
+                               name="staff_id" 
+                               value="{{ form.staff_id.value }}"
+                               placeholder="e.g., STF001, TCH123"
+                               required
+                               maxlength="20"
+                               pattern="[A-Z]{2,4}[0-9]{2,4}"
+                               title="Enter a valid staff ID (e.g., STF001, TCH123)">
+                    </div>
+                    <div class="help-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Use format: 2-4 letters followed by 2-4 numbers (e.g., STF001)
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="staff_name" class="form-label">
+                        <i class="fas fa-user me-1"></i>
+                        Staff Name <span class="required-indicator">*</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-user-tie"></i>
+                        </span>
+                        <input type="text" 
+                               class="form-control" 
+                               id="staff_name" 
+                               name="staff_name" 
+                               value="{{ form.staff_name.value }}"
+                               placeholder="Enter full name"
+                               required
+                               maxlength="100"
+                               minlength="2">
+                    </div>
+                    <div class="help-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Enter the lecturer's full name (2-100 characters)
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="staff_password" class="form-label">
+                        <i class="fas fa-lock me-1"></i>
+                        Password <span class="required-indicator">*</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-key"></i>
+                        </span>
+                        <input type="password" 
+                               class="form-control" 
+                               id="staff_password" 
+                               name="staff_password" 
+                               value="{{ form.staff_password.value }}"
+                               placeholder="Enter new password or keep current"
+                               required
+                               minlength="6">
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="help-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Leave unchanged to keep current password, or enter a new password (minimum 6 characters)
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-update">
+                <i class="fas fa-save me-2"></i>
+                Update Lecturer
+            </button>
+            
+            <a href="{% url 'list_lecturers' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>
+                Back to List
+            </a>
+            
+            <button type="reset" class="btn btn-outline-warning" onclick="resetForm()">
+                <i class="fas fa-undo me-2"></i>
+                Reset Changes
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add active class to the current menu item
+        const listStaffLink = document.querySelector('a[href*="list_lecturers"]');
+        if (listStaffLink) {
+            listStaffLink.classList.add('active');
+        }
+        
+        // Auto-expand the staff submenu
+        const staffCollapse = document.getElementById('staffCollapse');
+        if (staffCollapse) {
+            staffCollapse.classList.add('show');
+            const staffToggle = document.querySelector('[data-bs-toggle="collapse"][href="#staffCollapse"]');
+            if (staffToggle) {
+                staffToggle.classList.remove('collapsed');
+                staffToggle.setAttribute('aria-expanded', 'true');
+            }
+        }
+        
+        // Auto-uppercase staff ID
+        const staffIdInput = document.getElementById('staff_id');
+        staffIdInput.addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+        
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordField = document.getElementById('staff_password');
+            const icon = this.querySelector('i');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+        
+        // Form submission handling
+        document.getElementById('updateForm').addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('.btn-update');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating...';
+            submitBtn.disabled = true;
+            
+            // Re-enable button after 3 seconds in case of issues
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 3000);
+        });
+        
+        // Track form changes
+        const form = document.getElementById('updateForm');
+        const originalValues = {};
+        
+        // Store original values
+        const inputs = form.querySelectorAll('input');
+        inputs.forEach(input => {
+            originalValues[input.name] = input.value;
+        });
+        
+        // Check for changes
+        function checkForChanges() {
+            let hasChanges = false;
+            inputs.forEach(input => {
+                if (input.value !== originalValues[input.name]) {
+                    hasChanges = true;
+                }
+            });
+            
+            const submitBtn = form.querySelector('.btn-update');
+            if (hasChanges) {
+                submitBtn.classList.add('btn-warning');
+                submitBtn.classList.remove('btn-primary');
+                submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Save Changes';
+            } else {
+                submitBtn.classList.remove('btn-warning');
+                submitBtn.classList.add('btn-primary');
+                submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Update Lecturer';
+            }
+        }
+        
+        // Add change listeners
+        inputs.forEach(input => {
+            input.addEventListener('input', checkForChanges);
+        });
+    });
+    
+    // Toggle current password visibility
+    function toggleCurrentPassword() {
+        const currentPassword = document.getElementById('currentPassword');
+        const hiddenPassword = document.getElementById('hiddenPassword');
+        const icon = document.getElementById('passwordToggleIcon');
+        
+        if (currentPassword.style.display === 'none') {
+            currentPassword.style.display = 'inline';
+            hiddenPassword.style.display = 'none';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            currentPassword.style.display = 'none';
+            hiddenPassword.style.display = 'inline';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+    
+    // Reset form to original values
+    function resetForm() {
+        const form = document.getElementById('updateForm');
+        form.reset();
+        
+        // Reset button appearance
+        const submitBtn = form.querySelector('.btn-update');
+        submitBtn.classList.remove('btn-warning');
+        submitBtn.classList.add('btn-primary');
+        submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Update Lecturer';
+    }
+    
+    // Confirm before leaving if there are unsaved changes
+    window.addEventListener('beforeunload', function(e) {
+        const form = document.getElementById('updateForm');
+        const inputs = form.querySelectorAll('input');
+        let hasChanges = false;
+        
+        inputs.forEach(input => {
+            if (input.value !== input.defaultValue) {
+                hasChanges = true;
+            }
+        });
+        
+        if (hasChanges) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+</script>
+{% endblock %}

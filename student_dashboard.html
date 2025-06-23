@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Student Dashboard - College Attendance Tracker{% endblock %}
+
+{% block page_title %}Here's Your Attendance Records{% endblock %}
+
+{% block sidebar_menu %}
+<!-- STUDENT MENU - Simplified -->
+<a class="nav-link" href="{% url 'student_dashboard' %}">
+    <i class="fas fa-calendar-check me-2"></i>
+    View Attendance
+</a>
+
+<hr class="bg-light">
+
+<!-- Logout -->
+<a class="nav-link text-danger" href="{% url 'student_logout' %}">
+    <i class="fas fa-sign-out-alt me-2"></i>
+    Logout
+</a>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .attendance-section {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        margin-bottom: 30px;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        border-bottom: 2px solid #ecf0f1;
+        padding-bottom: 15px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #2c3e50;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .attendance-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .attendance-table th, .attendance-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ecf0f1;
+    }
+
+    .attendance-table th {
+        background: #f8f9fa;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .attendance-table tr:hover {
+        background: #f8f9fa;
+    }
+
+    .status-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .status-present {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status-absent {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .status-late {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .back-btn {
+        background-color: #95a5a6;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 16px;
+        display: inline-block;
+        margin-top: 20px;
+    }
+
+    .back-btn:hover {
+        background-color: #7f8c8d;
+    }
+
+    @media (max-width: 768px) {
+        .attendance-table {
+            font-size: 12px;
+        }
+
+        .attendance-table th, .attendance-table td {
+            padding: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="attendance-section">
+    <div class="section-header">
+        <h2 class="section-title"> Attendance History</h2>
+    </div>
+
+    <!-- Attendance Table -->
+    <table class="attendance-table table table-hover">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Time Slot</th>
+                <th>Status</th>
+                <th>Subject</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in attendance_records %}
+            <tr>
+                <td>{{ record.date }}</td>
+                <td>{{ record.time_slot }}</td>
+                <td><span class="status-badge status-{{ record.status|lower }}">{{ record.status }}</span></td>
+                <td>{{ record.subject.subject_code }} - {{ record.subject.subject_name }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 40px; color: #7f8c8d;">
+                    No attendance records found.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,504 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Staff Member - School Management System{% endblock %}
+
+{% block page_title %}Add New Staff Member{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .form-header {
+        border-bottom: 3px solid #007bff;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .form-header h3 {
+        color: #2c3e50;
+        margin: 0;
+        font-weight: 600;
+    }
+    
+    .form-header p {
+        color: #6c757d;
+        margin: 5px 0 0 0;
+        font-size: 0.95rem;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+    }
+    
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        padding: 12px 15px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    .form-control:invalid {
+        border-color: #dc3545;
+    }
+    
+    .form-control:valid {
+        border-color: #28a745;
+    }
+    
+    .input-group-text {
+        background-color: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-right: none;
+        color: #6c757d;
+    }
+    
+    .input-group .form-control {
+        border-left: none;
+    }
+    
+    .input-group:focus-within .input-group-text {
+        border-color: #007bff;
+        background-color: #e7f3ff;
+        color: #007bff;
+    }
+    
+    .btn-submit {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        border: none;
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+    }
+    
+    .btn-submit:hover {
+        background: linear-gradient(135deg, #218838, #1e9e8a);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+    }
+    
+    .btn-submit:active {
+        transform: translateY(0);
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .help-text {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+    
+    .required-indicator {
+        color: #dc3545;
+        font-weight: bold;
+    }
+    
+    .password-strength {
+        margin-top: 5px;
+        padding: 8px;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        display: none;
+    }
+    
+    .password-weak {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    
+    .password-medium {
+        background-color: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+    }
+    
+    .password-strong {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    
+    .form-preview {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 15px;
+        margin-top: 20px;
+        display: none;
+    }
+    
+    .preview-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 5px;
+    }
+    
+    .preview-value {
+        color: #007bff;
+        font-family: monospace;
+        background-color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        border: 1px solid #dee2e6;
+    }
+    
+    .staff-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        margin: 0 auto 15px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Form Container -->
+<div class="form-container">
+    <div class="form-header">
+        <h3>
+            <i class="fas fa-user-plus text-primary me-2"></i>
+            Add New Staff Member
+        </h3>
+        <p>Fill in the details below to add a new staff member to the system</p>
+    </div>
+    
+    <!-- Staff Form -->
+    <form method="POST" action="{% url 'add_lecturer' %}" id="staffForm">
+        {% csrf_token %}
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="staffId" class="form-label">
+                        <i class="fas fa-id-badge me-1"></i>
+                        Staff ID <span class="required-indicator">*</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-hashtag"></i>
+                        </span>
+                        <input type="text" 
+                               class="form-control" 
+                               id="staffId" 
+                               name="staff_id" 
+                               placeholder="e.g., STF001, TCH123"
+                               required
+                               maxlength="20"
+                               pattern="[A-Z]{2,4}[0-9]{2,4}"
+                               title="Enter a valid staff ID (e.g., STF001, TCH123)">
+                    </div>
+                    <div class="help-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Use format: 2-4 letters followed by 2-4 numbers (e.g., STF001)
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="staffName" class="form-label">
+                        <i class="fas fa-user me-1"></i>
+                        Staff Name <span class="required-indicator">*</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-user-tie"></i>
+                        </span>
+                        <input type="text" 
+                               class="form-control" 
+                               id="staffName" 
+                               name="staff_name" 
+                               placeholder="Enter full name"
+                               required
+                               maxlength="100"
+                               minlength="2">
+                    </div>
+                    <div class="help-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Enter the staff member's full name (2-100 characters)
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="staffPassword" class="form-label">
+                        <i class="fas fa-lock me-1"></i>
+                        Password <span class="required-indicator">*</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-key"></i>
+                        </span>
+                        <input type="password" 
+                               class="form-control" 
+                               id="staffPassword" 
+                               name="staff_password" 
+                               placeholder="Enter secure password"
+                               required
+                               minlength="6">
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength" id="passwordStrength"></div>
+                    <div class="help-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Minimum 6 characters. Include letters, numbers, and symbols for better security.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="staffRole" class="form-label">
+                        <i class="fas fa-briefcase me-1"></i>
+                        Role/Position
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-user-tag"></i>
+                        </span>
+                        <select class="form-control" id="staffRole" name="staff_role">
+                            <option value="">Select Role (Optional)</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="lecturer">Lecturer</option>
+                            <option value="administrator">Administrator</option>
+                            <option value="coordinator">Coordinator</option>
+                            <option value="counselor">Counselor</option>
+                            <option value="librarian">Librarian</option>
+                        </select>
+                    </div>
+                    <div class="help-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Optional: Select the staff member's primary role
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form Preview -->
+        <div class="form-preview" id="formPreview">
+            <h6 class="preview-label">
+                <i class="fas fa-eye me-1"></i>
+                Preview:
+            </h6>
+            <div class="row">
+                <div class="col-md-2 text-center">
+                    <div class="staff-avatar" id="previewAvatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <small class="preview-label">Staff ID:</small>
+                            <div class="preview-value" id="previewId">-</div>
+                        </div>
+                        <div class="col-md-4">
+                            <small class="preview-label">Name:</small>
+                            <div class="preview-value" id="previewName">-</div>
+                        </div>
+                        <div class="col-md-4">
+                            <small class="preview-label">Role:</small>
+                            <div class="preview-value" id="previewRole">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success btn-submit">
+                <i class="fas fa-user-plus me-2"></i>
+                Add Staff Member
+            </button>
+            
+            <button type="reset" class="btn btn-outline-secondary" onclick="resetPreview()">
+                <i class="fas fa-undo me-2"></i>
+                Reset Form
+            </button>
+            
+           
+        </div>
+    </form>
+</div>
+
+
+    
+   
+    
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add active class to the current menu item
+        const addStaffLink = document.querySelector('a[href*="add_lecturer"]');
+        if (addStaffLink) {
+            addStaffLink.classList.add('active');
+        }
+        
+        // Auto-expand the staff submenu
+        const staffCollapse = document.getElementById('staffCollapse');
+        if (staffCollapse) {
+            staffCollapse.classList.add('show');
+            const staffToggle = document.querySelector('[data-bs-toggle="collapse"][href="#staffCollapse"]');
+            if (staffToggle) {
+                staffToggle.classList.remove('collapsed');
+                staffToggle.setAttribute('aria-expanded', 'true');
+            }
+        }
+        
+        // Form preview functionality
+        const staffIdInput = document.getElementById('staffId');
+        const staffNameInput = document.getElementById('staffName');
+        const staffRoleInput = document.getElementById('staffRole');
+        const formPreview = document.getElementById('formPreview');
+        const previewId = document.getElementById('previewId');
+        const previewName = document.getElementById('previewName');
+        const previewRole = document.getElementById('previewRole');
+        const previewAvatar = document.getElementById('previewAvatar');
+        
+        function updatePreview() {
+            const id = staffIdInput.value.trim();
+            const name = staffNameInput.value.trim();
+            const role = staffRoleInput.value;
+            
+            if (id || name || role) {
+                formPreview.style.display = 'block';
+                previewId.textContent = id || '-';
+                previewName.textContent = name || '-';
+                previewRole.textContent = role ? role.charAt(0).toUpperCase() + role.slice(1) : '-';
+                
+                // Update avatar with initials
+                if (name) {
+                    const initials = name.split(' ').map(n => n[0]).join('').substr(0, 2).toUpperCase();
+                    previewAvatar.textContent = initials;
+                } else {
+                    previewAvatar.innerHTML = '<i class="fas fa-user"></i>';
+                }
+            } else {
+                formPreview.style.display = 'none';
+            }
+        }
+        
+        staffIdInput.addEventListener('input', updatePreview);
+        staffNameInput.addEventListener('input', updatePreview);
+        staffRoleInput.addEventListener('change', updatePreview);
+        
+        // Auto-uppercase staff ID
+        staffIdInput.addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+        
+        // Password strength checker
+        const passwordInput = document.getElementById('staffPassword');
+        const passwordStrength = document.getElementById('passwordStrength');
+        
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            const strength = checkPasswordStrength(password);
+            
+            if (password.length > 0) {
+                passwordStrength.style.display = 'block';
+                passwordStrength.className = 'password-strength ' + strength.class;
+                passwordStrength.textContent = strength.message;
+            } else {
+                passwordStrength.style.display = 'none';
+            }
+        });
+        
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordField = document.getElementById('staffPassword');
+            const icon = this.querySelector('i');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+        
+        // Form submission handling
+        document.getElementById('staffForm').addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('.btn-submit');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Adding Staff Member...';
+            submitBtn.disabled = true;
+        });
+    });
+    
+    function checkPasswordStrength(password) {
+        let score = 0;
+        let message = '';
+        
+        if (password.length >= 8) score++;
+        if (/[a-z]/.test(password)) score++;
+        if (/[A-Z]/.test(password)) score++;
+        if (/[0-9]/.test(password)) score++;
+        if (/[^A-Za-z0-9]/.test(password)) score++;
+        
+        if (score < 3) {
+            return { class: 'password-weak', message: 'Weak password. Add more characters, numbers, or symbols.' };
+        } else if (score < 4) {
+            return { class: 'password-medium', message: 'Medium strength. Consider adding special characters.' };
+        } else {
+            return { class: 'password-strong', message: 'Strong password! Good security practices.' };
+        }
+    }
+    
+    function resetPreview() {
+        document.getElementById('formPreview').style.display = 'none';
+        document.getElementById('previewId').textContent = '-';
+        document.getElementById('previewName').textContent = '-';
+        document.getElementById('previewRole').textContent = '-';
+        document.getElementById('previewAvatar').innerHTML = '<i class="fas fa-user"></i>';
+        document.getElementById('passwordStrength').style.display = 'none';
+    }
+</script>
+{% endblock %}

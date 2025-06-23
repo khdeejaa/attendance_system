@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Staff Login - College Attendance Tracker</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f7fa; /* Light greyish background */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            color: #2980b9;
+            font-size: 36px;
+            margin-bottom: 30px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2980b9;
+        }
+
+        button {
+            padding: 14px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1c5980;
+        }
+
+        .footer-note {
+            font-size: 12px;
+            color: #888;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .back-btn {
+            margin-top: 20px;
+            text-decoration: none;
+            display: inline-block;
+            padding: 10px;
+            background-color: #95a5a6;
+            color: white;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .back-btn:hover {
+            background-color: #7f8c8d;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Login Form -->
+    <div class="login-container">
+        <h2>Staff Login</h2>
+
+        <!-- Display errors (if any) -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="error-message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="{% url 'staff_login' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required placeholder="Enter your username">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password">
+            </div>
+
+            <button type="submit">Login</button>
+        </form>
+
+        <a href="{% url 'homepage' %}" class="back-btn">Back to Home</a>
+    </div>
+
+    <!-- Footer Note -->
+    <div class="footer-note">
+        &copy; {{ now|date:"Y" }} College Attendance Tracker System. All rights reserved.
+    </div>
+
+</body>
+</html>

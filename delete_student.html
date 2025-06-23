@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Student</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f5f5f5;
+            display: flex;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            background-color: #2980b9;
+            color: white;
+            height: 100vh;
+            padding-top: 20px;
+            padding-left: 20px;
+        }
+
+        .sidebar h2 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .sidebar a:hover {
+            background-color: #1c5980;
+        }
+
+        /* Main content area */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-left: 270px; /* Space for sidebar */
+        }
+
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .confirm-btn, .back-btn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .confirm-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .back-btn {
+            background-color: #95a5a6;
+        }
+
+        .back-btn:hover {
+            background-color: #7f8c8d;
+        }
+
+        .delete-message {
+            font-size: 16px;
+            color: #e74c3c;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Admin Dashboard</h2>
+        <a href="{% url 'add_student' %}">Add Student</a>
+        <a href="{% url 'list_students' %}">View Students</a>
+        <a href="{% url 'add_lecturer' %}">Add Lecturer</a>
+        <a href="{% url 'list_lecturers' %}">View Lecturers</a>
+        <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h2>Confirm Deletion</h2>
+
+        <p class="delete-message">
+            Are you sure you want to delete the student <strong>{{ student.student_name }}</strong> with ID <strong>{{ student.student_id }}</strong>?
+        </p>
+
+        <!-- Delete Confirmation Form -->
+        <form method="POST" action="{% url 'delete_student' student.id %}">
+            {% csrf_token %}
+            <button type="submit" class="confirm-btn">Confirm Deletion</button>
+        </form>
+
+        <a href="{% url 'list_students' %}" class="back-btn">Back to Student List</a>
+    </div>
+</body>
+</html>

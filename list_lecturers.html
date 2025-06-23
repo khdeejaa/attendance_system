@@ -1,0 +1,461 @@
+{% extends 'base.html' %}
+
+{% block title %}List of Lecturers - School Management System{% endblock %}
+
+{% block page_title %}List of Lecturers{% endblock %}
+
+{% block extra_css %}
+<style>
+    .lecturer-table {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .table th {
+        background-color: #007bff;
+        color: white;
+        font-weight: 600;
+        border: none;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    
+    .table td {
+        vertical-align: middle;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+        transform: scale(1.001);
+        transition: all 0.2s ease;
+    }
+    
+    .action-buttons {
+        white-space: nowrap;
+    }
+    
+    .btn-action {
+        padding: 6px 12px;
+        font-size: 12px;
+        margin-right: 5px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-action:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        color: #dee2e6;
+    }
+    
+    .empty-state h4 {
+        color: #495057;
+        margin-bottom: 15px;
+    }
+    
+    .stats-cards {
+        margin-bottom: 25px;
+    }
+    
+    .stat-card {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+    
+    .staff-id {
+        background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        color: #1565c0;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        display: inline-block;
+        min-width: 80px;
+        text-align: center;
+    }
+    
+    .staff-name {
+        font-weight: 500;
+        color: #495057;
+    }
+    
+    .staff-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+        margin-right: 10px;
+    }
+    
+    .role-badge {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-weight: 500;
+    }
+    
+    .role-teacher { background-color: #e7f3ff; color: #0066cc; }
+    .role-lecturer { background-color: #fff3e0; color: #e65100; }
+    .role-administrator { background-color: #f3e5f5; color: #7b1fa2; }
+    .role-coordinator { background-color: #e8f5e8; color: #2e7d32; }
+    .role-counselor { background-color: #fff8e1; color: #f57c00; }
+    .role-librarian { background-color: #fce4ec; color: #c2185b; }
+    
+    .search-filter-section {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+    
+    .search-input {
+        border: 2px solid #e9ecef;
+        border-radius: 25px;
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    
+    .search-input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    .table-info {
+        background-color: #e3f2fd;
+        border-left: 4px solid #2196f3;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+    }
+    
+    .password-display {
+        font-family: 'Courier New', monospace;
+        background-color: #f8f9fa;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        color: #495057;
+        border: 1px solid #dee2e6;
+        cursor: pointer;
+        user-select: none;
+    }
+    
+    .password-hidden {
+        color: #6c757d;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Statistics Cards -->
+
+
+<!-- Search and Filter Section -->
+<div class="search-filter-section">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0">
+                    <i class="fas fa-search text-muted"></i>
+                </span>
+                <input type="text" 
+                       class="form-control search-input border-start-0" 
+                       id="searchLecturer" 
+                       placeholder="Search lecturers by ID, name, or role..."
+                       onkeyup="filterLecturers()">
+            </div>
+        </div>
+        <div class="col-md-6 text-end">
+            <span class="text-muted">
+                <i class="fas fa-info-circle me-1"></i>
+                Showing <span id="visibleCount">{{ lecturers|length }}</span> of {{ lecturers|length }} lecturer{{ lecturers|length|pluralize }}
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Lecturers Table -->
+<div class="lecturer-table">
+    {% if lecturers %}
+        <!-- Table Info -->
+        
+        
+        <div class="table-responsive">
+            <table class="table table-hover mb-0" id="lecturerTable">
+                <thead>
+                    <tr>
+                        <th scope="col" style="width: 20%;">
+                            <i class="fas fa-id-badge me-1"></i>
+                            Lecturer Details
+                        </th>
+                        <th scope="col" style="width: 15%;">
+                            <i class="fas fa-hashtag me-1"></i>
+                            Staff ID
+                        </th>
+                        <th scope="col" style="width: 15%;">
+                            <i class="fas fa-key me-1"></i>
+                            Password
+                        </th>
+                        <th scope="col" style="width: 15%;">
+                            <i class="fas fa-briefcase me-1"></i>
+                            Role
+                        </th>
+                        <th scope="col" class="text-center" style="width: 15%;">
+                            <i class="fas fa-cogs me-1"></i>
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lecturer in lecturers %}
+                        <tr class="lecturer-row">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="staff-avatar">
+                                        {% if lecturer.staff_name %}
+                                            {{ lecturer.staff_name|slice:":2"|upper }}
+                                        {% else %}
+                                            <i class="fas fa-user"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <div class="staff-name">{{ lecturer.staff_name }}</div>
+                                        <small class="text-muted">
+                                            <i class="fas fa-calendar me-1"></i>
+                                            Member since {{ lecturer.created_at|date:"M Y"|default:"Recently" }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="staff-id">{{ lecturer.staff_id }}</span>
+                            </td>
+                            <td>
+                                <span class="password-display" onclick="togglePassword(this)" data-password="{{ lecturer.staff_password }}">
+                                    <span class="password-hidden">••••••••</span>
+                                    <i class="fas fa-eye ms-1"></i>
+                                </span>
+                            </td>
+                            <td>
+                                {% if lecturer.staff_role %}
+                                    <span class="role-badge role-{{ lecturer.staff_role|lower }}">
+                                        {{ lecturer.staff_role|title }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Lecturer</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="action-buttons">
+                                    <a href="{% url 'update_lecturer' lecturer.id %}" 
+                                       class="btn btn-outline-primary btn-sm btn-action" 
+                                       title="Edit Lecturer"
+                                       data-bs-toggle="tooltip">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'delete_lecturer' lecturer.id %}" 
+                                       class="btn btn-outline-danger btn-sm btn-action" 
+                                       title="Delete Lecturer"
+                                       data-bs-toggle="tooltip"
+                                       onclick="return confirmDelete('{{ lecturer.staff_name }}', '{{ lecturer.staff_id }}')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-users"></i>
+            <h4>No Lecturers Found</h4>
+            <p class="mb-4">You haven't added any lecturers to the system yet.</p>
+            <a href="{% url 'add_lecturer' %}" class="btn btn-success">
+                <i class="fas fa-user-plus me-1"></i>
+                Add First Lecturer
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add active class to the current menu item
+        const listLecturersLink = document.querySelector('a[href*="list_lecturers"]');
+        if (listLecturersLink) {
+            listLecturersLink.classList.add('active');
+        }
+        
+        // Auto-expand the staff submenu
+        const staffCollapse = document.getElementById('staffCollapse');
+        if (staffCollapse) {
+            staffCollapse.classList.add('show');
+            const staffToggle = document.querySelector('[data-bs-toggle="collapse"][href="#staffCollapse"]');
+            if (staffToggle) {
+                staffToggle.classList.remove('collapsed');
+                staffToggle.setAttribute('aria-expanded', 'true');
+            }
+        }
+        
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Calculate role statistics
+        calculateRoleStats();
+    });
+    
+    // Search and filter functionality
+    function filterLecturers() {
+        const searchTerm = document.getElementById('searchLecturer').value.toLowerCase();
+        const rows = document.querySelectorAll('.lecturer-row');
+        let visibleCount = 0;
+        
+        rows.forEach(function(row) {
+            const staffId = row.querySelector('.staff-id').textContent.toLowerCase();
+            const staffName = row.querySelector('.staff-name').textContent.toLowerCase();
+            const staffRole = row.querySelector('.role-badge')?.textContent.toLowerCase() || '';
+            
+            if (staffId.includes(searchTerm) || staffName.includes(searchTerm) || staffRole.includes(searchTerm)) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        
+        document.getElementById('visibleCount').textContent = visibleCount;
+        
+        // Show/hide empty message
+        const tableBody = document.querySelector('#lecturerTable tbody');
+        const existingEmptyRow = tableBody.querySelector('.empty-search-row');
+        
+        if (visibleCount === 0 && searchTerm !== '') {
+            if (!existingEmptyRow) {
+                const emptyRow = document.createElement('tr');
+                emptyRow.className = 'empty-search-row';
+                emptyRow.innerHTML = `
+                    <td colspan="5" class="text-center py-4">
+                        <i class="fas fa-search text-muted mb-2" style="font-size: 2rem;"></i>
+                        <div>No lecturers found matching "<strong>${searchTerm}</strong>"</div>
+                        <small class="text-muted">Try adjusting your search terms</small>
+                    </td>
+                `;
+                tableBody.appendChild(emptyRow);
+            }
+        } else if (existingEmptyRow) {
+            existingEmptyRow.remove();
+        }
+    }
+    
+    // Toggle password visibility
+    function togglePassword(element) {
+        const passwordSpan = element.querySelector('.password-hidden');
+        const icon = element.querySelector('i');
+        const actualPassword = element.getAttribute('data-password');
+        
+        if (passwordSpan.textContent === '••••••••') {
+            passwordSpan.textContent = actualPassword;
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+            element.title = 'Click to hide password';
+        } else {
+            passwordSpan.textContent = '••••••••';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+            element.title = 'Click to show password';
+        }
+    }
+    
+    // Enhanced delete confirmation
+    function confirmDelete(lecturerName, staffId) {
+        const message = `Are you sure you want to delete the lecturer "${lecturerName}" (${staffId})?\n\nThis action cannot be undone and may affect system records.`;
+        return confirm(message);
+    }
+    
+    // Calculate role-based statistics
+    function calculateRoleStats() {
+        const roleBadges = document.querySelectorAll('.role-badge');
+        let teachingCount = 0;
+        let adminCount = 0;
+        
+        roleBadges.forEach(badge => {
+            const role = badge.textContent.toLowerCase();
+            if (role.includes('teacher') || role.includes('lecturer')) {
+                teachingCount++;
+            } else if (role.includes('admin') || role.includes('coordinator')) {
+                adminCount++;
+            }
+        });
+        
+        document.getElementById('teachingStaff').textContent = teachingCount;
+        document.getElementById('adminStaff').textContent = adminCount;
+    }
+    
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Ctrl/Cmd + K to focus search
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            document.getElementById('searchLecturer').focus();
+        }
+        
+        // Escape to clear search
+        if (e.key === 'Escape') {
+            const searchInput = document.getElementById('searchLecturer');
+            if (searchInput.value) {
+                searchInput.value = '';
+                filterLecturers();
+                searchInput.blur();
+            }
+        }
+    });
+</script>
+{% endblock %}

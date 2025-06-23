@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - School Management{% endblock %}
+
+{% block page_title %}Admin Dashboard{% endblock %}
+
+{% block sidebar_menu %}
+<!-- Admin sidebar with same structure -->
+<a class="nav-link active" href="{% url 'admin_dashboard' %}">
+    <i class="fas fa-tachometer-alt me-2"></i>
+    Dashboard
+</a>
+
+<!-- Manage Students Section -->
+<div class="sidebar-section">
+    <a class="nav-link collapsed" data-bs-toggle="collapse" href="#studentsCollapse" role="button" aria-expanded="false" aria-controls="studentsCollapse">
+        <i class="fas fa-user-graduate me-2"></i>
+        Manage Students
+        <i class="fas fa-chevron-down float-end mt-1"></i>
+    </a>
+    <div class="collapse" id="studentsCollapse">
+        <div class="submenu">
+            <a class="nav-link submenu-link" href="{% url 'add_student' %}">
+                <i class="fas fa-plus me-2"></i>
+                Add Student
+            </a>
+            <a class="nav-link submenu-link" href="{% url 'list_students' %}">
+                <i class="fas fa-list me-2"></i>
+                List Students
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Manage Staff Section -->
+<div class="sidebar-section">
+    <a class="nav-link collapsed" data-bs-toggle="collapse" href="#staffCollapse" role="button" aria-expanded="false" aria-controls="staffCollapse">
+        <i class="fas fa-users me-2"></i>
+        Manage Staff
+        <i class="fas fa-chevron-down float-end mt-1"></i>
+    </a>
+    <div class="collapse" id="staffCollapse">
+        <div class="submenu">
+            <a class="nav-link submenu-link" href="{% url 'add_lecturer' %}">
+                <i class="fas fa-user-plus me-2"></i>
+                Add Staff
+            </a>
+            <a class="nav-link submenu-link" href="{% url 'list_lecturers' %}">
+                <i class="fas fa-users me-2"></i>
+                List Staff
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Subjects Section -->
+<div class="sidebar-section">
+    <a class="nav-link collapsed" data-bs-toggle="collapse" href="#subjectsCollapse" role="button" aria-expanded="false" aria-controls="subjectsCollapse">
+        <i class="fas fa-book me-2"></i>
+        Subjects
+        <i class="fas fa-chevron-down float-end mt-1"></i>
+    </a>
+    <div class="collapse" id="subjectsCollapse">
+        <div class="submenu">
+            <a class="nav-link submenu-link" href="{% url 'add_subject' %}">
+                <i class="fas fa-plus me-2"></i>
+                Add Subject
+            </a>
+            <a class="nav-link submenu-link" href="{% url 'list_subjects' %}">
+                <i class="fas fa-list me-2"></i>
+                List Subjects
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Reports -->
+<a class="nav-link" href="{% url 'admin_reports' %}">
+    <i class="fas fa-chart-bar me-2"></i>
+    Reports
+</a>
+
+<hr class="bg-light">
+
+<!-- Logout -->
+<a class="nav-link text-danger" href="{% url 'admin_logout' %}">
+    <i class="fas fa-sign-out-alt me-2"></i>
+    Logout
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Statistics Cards -->
+    <div class="col-md-3 mb-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Total Staff</h5>
+                        <h3>{{ total_staff|default:0 }}</h3>
+                    </div>
+                    <div>
+                        <i class="fas fa-user-tie fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Total Students</h5>
+                        <h3>{{ total_students|default:0 }}</h3>
+                    </div>
+                    <div>
+                        <i class="fas fa-user-graduate fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Total Classes</h5>
+                        <h3>{{ total_classes|default:0 }}</h3>
+                    </div>
+                    <div>
+                        <i class="fas fa-users fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Total Subjects</h5>
+                        <h3>{{ total_subjects|default:0 }}</h3>
+                    </div>
+                    <div>
+                        <i class="fas fa-book fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activities -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Recent Activities</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-user-plus text-success me-2"></i>
+                            New student registered
+                        </div>
+                        <small class="text-muted">2 hours ago</small>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-user-tie text-primary me-2"></i>
+                            New staff member added
+                        </div>
+                        <small class="text-muted">4 hours ago</small>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-book text-info me-2"></i>
+                            New subject added
+                        </div>
+                        <small class="text-muted">5 hours ago</small>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-users text-primary me-2"></i>
+                            Class schedule updated
+                        </div>
+                        <small class="text-muted">1 day ago</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Optional: Summary Statistics -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">System Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <h6 class="text-muted">Student to Staff Ratio</h6>
+                        <h4 class="text-primary">{{ student_staff_ratio|default:0 }}:1</h4>
+                    </div>
+                    <div class="col-md-3">
+                        <h6 class="text-muted">Average Students per Class</h6>
+                        <h4 class="text-success">{{ avg_students_per_class|default:0 }}</h4>
+                    </div>
+                    <div class="col-md-3">
+                        <h6 class="text-muted">Subjects per Staff</h6>
+                        <h4 class="text-info">{{ subjects_per_staff|default:0 }}</h4>
+                    </div>
+                    <div class="col-md-3">
+                        <h6 class="text-muted">System Status</h6>
+                        <h4 class="text-success">
+                            <i class="fas fa-check-circle"></i> Active
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add any page-specific JavaScript here
+    console.log('Admin Dashboard loaded');
+    
+    // Auto-refresh statistics every 30 seconds (optional)
+    setInterval(function() {
+        // You can add AJAX call here to refresh statistics without page reload
+        console.log('Statistics refreshed');
+    }, 30000);
+</script>
+{% endblock %}

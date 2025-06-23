@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+
+{% block title %}List of Students - School Management System{% endblock %}
+
+{% block page_title %}List of Students{% endblock %}
+
+{% block extra_css %}
+<style>
+    .student-table {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .table th {
+        background-color: #007bff;
+        color: white;
+        font-weight: 600;
+        border: none;
+    }
+    
+    .table td {
+        vertical-align: middle;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .action-buttons {
+        white-space: nowrap;
+    }
+    
+    .btn-action {
+        padding: 6px 12px;
+        font-size: 12px;
+        margin-right: 5px;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #6c757d;
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: #dee2e6;
+    }
+    
+    .stats-cards {
+        margin-bottom: 25px;
+    }
+    
+    .stat-card {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<!-- Action Buttons -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+    </div>
+    <div class="d-flex align-items-center">
+        <span class="text-muted me-2">Total: {{ students|length }} student{{ students|length|pluralize }}</span>
+    </div>
+</div>
+
+<!-- Students Table -->
+<div class="student-table">
+    {% if students %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">
+                            <i class="fas fa-id-card me-1"></i>
+                            Student ID
+                        </th>
+                        <th scope="col">
+                            <i class="fas fa-user me-1"></i>
+                            Student Name
+                        </th>
+                        <th scope="col">
+                            <i class="fas fa-key me-1"></i>
+                            Password
+                        </th>
+                        <th scope="col">
+                            <i class="fas fa-chalkboard me-1"></i>
+                            Class Assigned
+                        </th>
+                        <th scope="col" class="text-center">
+                            <i class="fas fa-cogs me-1"></i>
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                        <tr>
+                            <td>
+                                <strong>{{ student.student_id }}</strong>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-user-circle text-secondary me-2"></i>
+                                    {{ student.student_name }}
+                                </div>
+                            </td>
+                            <td>
+                                <code class="bg-light px-2 py-1 rounded">{{ student.student_password }}</code>
+                            </td>
+                            <td>
+                                {% if student.class_assigned %}
+                                    <span class="badge bg-info">{{ student.class_assigned.class_name }}</span>
+                                {% else %}
+                                    <span class="badge bg-warning">Not Assigned</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="action-buttons">
+                                    <a href="{% url 'update_student' student.id %}" 
+                                       class="btn btn-outline-primary btn-sm btn-action" 
+                                       title="Edit Student">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'delete_student' student.id %}" 
+                                       class="btn btn-outline-danger btn-sm btn-action" 
+                                       title="Delete Student"
+                                       onclick="return confirm('Are you sure you want to delete {{ student.student_name }}?')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-user-graduate"></i>
+            <h4>No Students Found</h4>
+            <p class="mb-3">You haven't added any students yet.</p>
+            <a href="{% url 'add_student' %}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i>
+                Add Your First Student
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Back to Dashboard Button -->
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add active class to the current menu item
+        const listStudentsLink = document.querySelector('a[href*="list-students"]');
+        if (listStudentsLink) {
+            listStudentsLink.classList.add('active');
+        }
+        
+        // Auto-collapse the student submenu to show it's active
+        const studentsCollapse = document.getElementById('studentsCollapse');
+        if (studentsCollapse) {
+            studentsCollapse.classList.add('show');
+            const studentsToggle = document.querySelector('[data-bs-target="#studentsCollapse"]');
+            if (studentsToggle) {
+                studentsToggle.classList.remove('collapsed');
+                studentsToggle.setAttribute('aria-expanded', 'true');
+            }
+        }
+    });
+</script>
+{% endblock %}

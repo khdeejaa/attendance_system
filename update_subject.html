@@ -1,0 +1,544 @@
+{% extends 'base.html' %}
+
+{% block title %}Update Subject - School Management System{% endblock %}
+
+{% block page_title %}Update Subject Information{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .form-header {
+        border-bottom: 3px solid #6f42c1;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .form-header h3 {
+        color: #2c3e50;
+        margin: 0;
+        font-weight: 600;
+    }
+    
+    .form-header p {
+        color: #6c757d;
+        margin: 5px 0 0 0;
+        font-size: 0.95rem;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+    }
+    
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        padding: 12px 15px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #6f42c1;
+        box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
+    }
+    
+    .form-control:invalid {
+        border-color: #dc3545;
+    }
+    
+    .form-control:valid {
+        border-color: #6f42c1;
+    }
+    
+    .input-group-text {
+        background-color: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-right: none;
+        color: #6c757d;
+    }
+    
+    .input-group .form-control {
+        border-left: none;
+    }
+    
+    .input-group:focus-within .input-group-text {
+        border-color: #6f42c1;
+        background-color: #f8f4ff;
+        color: #6f42c1;
+    }
+    
+    .btn-update {
+        background: linear-gradient(135deg, #6f42c1, #e83e8c);
+        border: none;
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(111, 66, 193, 0.3);
+    }
+    
+    .btn-update:hover {
+        background: linear-gradient(135deg, #5a2d91, #c23568);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(111, 66, 193, 0.4);
+    }
+    
+    .btn-update:active {
+        transform: translateY(0);
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .help-text {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+    
+    .required-indicator {
+        color: #dc3545;
+        font-weight: bold;
+    }
+    
+    .current-info {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .current-info h6 {
+        color: #495057;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+    
+    .current-info .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .current-info .info-item:last-child {
+        border-bottom: none;
+    }
+    
+    .current-info .info-label {
+        font-weight: 500;
+        color: #6c757d;
+    }
+    
+    .current-info .info-value {
+        color: #6f42c1;
+        font-family: monospace;
+        background-color: white;
+        padding: 2px 8px;
+        border-radius: 4px;
+        border: 1px solid #dee2e6;
+    }
+    
+    .subject-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6f42c1, #e83e8c);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 32px;
+        font-weight: bold;
+        margin: 0 auto 15px;
+    }
+    
+    .subject-code-display {
+        background: linear-gradient(135deg, #f8f4ff, #e8d5ff);
+        color: #6f42c1;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-family: 'Courier New', monospace;
+        font-size: 1.1rem;
+        display: inline-block;
+        border: 2px solid #d1c4e9;
+    }
+    
+    .subject-name-display {
+        background: linear-gradient(135deg, #fff0f6, #fce4ec);
+        color: #e83e8c;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 1rem;
+        display: inline-block;
+        border: 2px solid #f8bbd9;
+    }
+    
+    .form-preview {
+        background-color: #f8f4ff;
+        border: 2px solid #d1c4e9;
+        border-radius: 6px;
+        padding: 15px;
+        margin-top: 20px;
+        display: none;
+    }
+    
+    .preview-label {
+        font-weight: 600;
+        color: #6f42c1;
+        margin-bottom: 5px;
+    }
+    
+    .preview-content {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .char-counter {
+        font-size: 0.75rem;
+        color: #6c757d;
+        text-align: right;
+        margin-top: 5px;
+    }
+    
+    .char-counter.warning {
+        color: #ffc107;
+    }
+    
+    .char-counter.danger {
+        color: #dc3545;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<!-- Form Container -->
+<div class="form-container">
+    <div class="form-header">
+        <h3>
+            <i class="fas fa-book-open text-primary me-2"></i>
+            Update Subject Information
+        </h3>
+        <p>Modify the subject details below and click update to save changes</p>
+    </div>
+    
+    <!-- Update Form -->
+    <form method="POST" action="{% url 'update_subject' subject.id %}" id="updateForm">
+        {% csrf_token %}
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="subject_code" class="form-label">
+                        <i class="fas fa-hashtag me-1"></i>
+                        Subject Code <span class="required-indicator">*</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-code"></i>
+                        </span>
+                        <input type="text" 
+                               class="form-control" 
+                               id="subject_code" 
+                               name="subject_code" 
+                               value="{{ subject.subject_code }}"
+                               placeholder="e.g., MATH101, ENG201"
+                               required
+                               maxlength="20"
+                               minlength="3"
+                               pattern="[A-Z]{2,4}[0-9]{2,4}"
+                               title="Enter a valid subject code (e.g., MATH101, ENG201)">
+                    </div>
+                    <div class="char-counter" id="codeCounter">
+                        <span id="codeCount">{{ subject.subject_code|length }}</span>/20 characters
+                    </div>
+                    <div class="help-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Format: 2-4 letters followed by 2-4 numbers (e.g., MATH101)
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="subject_name" class="form-label">
+                        <i class="fas fa-book me-1"></i>
+                        Subject Name <span class="required-indicator">*</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-graduation-cap"></i>
+                        </span>
+                        <input type="text" 
+                               class="form-control" 
+                               id="subject_name" 
+                               name="subject_name" 
+                               value="{{ subject.subject_name }}"
+                               placeholder="Enter subject name"
+                               required
+                               maxlength="100"
+                               minlength="3">
+                    </div>
+                    <div class="char-counter" id="nameCounter">
+                        <span id="nameCount">{{ subject.subject_name|length }}</span>/100 characters
+                    </div>
+                    <div class="help-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Enter the full subject name (3-100 characters)
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form Preview -->
+        <div class="form-preview" id="formPreview">
+            <div class="preview-label">
+                <i class="fas fa-eye me-1"></i>
+                Live Preview:
+            </div>
+            <div class="preview-content">
+                <div>
+                    <small class="text-muted">Code:</small>
+                    <div class="subject-code-display" id="previewCode">{{ subject.subject_code }}</div>
+                </div>
+                <div>
+                    <small class="text-muted">Name:</small>
+                    <div class="subject-name-display" id="previewName">{{ subject.subject_name }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-update">
+                <i class="fas fa-save me-2"></i>
+                Update Subject
+            </button>
+            
+            <a href="{% url 'list_subjects' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>
+                Back to List
+            </a>
+            
+            <button type="reset" class="btn btn-outline-warning" onclick="resetForm()">
+                <i class="fas fa-undo me-2"></i>
+                Reset Changes
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add active class to the current menu item
+        const listSubjectsLink = document.querySelector('a[href*="list_subjects"]');
+        if (listSubjectsLink) {
+            listSubjectsLink.classList.add('active');
+        }
+        
+        // Auto-expand the subjects submenu
+        const subjectsCollapse = document.getElementById('subjectsCollapse');
+        if (subjectsCollapse) {
+            subjectsCollapse.classList.add('show');
+            const subjectsToggle = document.querySelector('[data-bs-toggle="collapse"][href="#subjectsCollapse"]');
+            if (subjectsToggle) {
+                subjectsToggle.classList.remove('collapsed');
+                subjectsToggle.setAttribute('aria-expanded', 'true');
+            }
+        }
+        
+        // Auto-uppercase subject code
+        const subjectCodeInput = document.getElementById('subject_code');
+        subjectCodeInput.addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+            updateCharCounter('subject_code', 'codeCount', 'codeCounter');
+            updatePreview();
+        });
+        
+        // Update character counter for subject name
+        const subjectNameInput = document.getElementById('subject_name');
+        subjectNameInput.addEventListener('input', function() {
+            updateCharCounter('subject_name', 'nameCount', 'nameCounter');
+            updatePreview();
+        });
+        
+        // Form submission handling
+        document.getElementById('updateForm').addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('.btn-update');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating...';
+            submitBtn.disabled = true;
+            
+            // Re-enable button after 3 seconds in case of issues
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 3000);
+        });
+        
+        // Track form changes
+        const form = document.getElementById('updateForm');
+        const originalValues = {};
+        
+        // Store original values
+        const inputs = form.querySelectorAll('input');
+        inputs.forEach(input => {
+            originalValues[input.name] = input.value;
+        });
+        
+        // Check for changes
+        function checkForChanges() {
+            let hasChanges = false;
+            inputs.forEach(input => {
+                if (input.value !== originalValues[input.name]) {
+                    hasChanges = true;
+                }
+            });
+            
+            const submitBtn = form.querySelector('.btn-update');
+            const preview = document.getElementById('formPreview');
+            
+            if (hasChanges) {
+                submitBtn.classList.add('btn-warning');
+                submitBtn.classList.remove('btn-primary');
+                submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Save Changes';
+                preview.style.display = 'block';
+            } else {
+                submitBtn.classList.remove('btn-warning');
+                submitBtn.classList.add('btn-primary');
+                submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Update Subject';
+                preview.style.display = 'none';
+            }
+        }
+        
+        // Add change listeners
+        inputs.forEach(input => {
+            input.addEventListener('input', checkForChanges);
+        });
+        
+        // Update avatar when code changes
+        subjectCodeInput.addEventListener('input', function() {
+            const avatar = document.querySelector('.subject-avatar');
+            if (this.value.length >= 2) {
+                avatar.textContent = this.value.slice(0, 2).toUpperCase();
+            } else {
+                avatar.innerHTML = '<i class="fas fa-book"></i>';
+            }
+        });
+        
+        // Initialize character counters
+        updateCharCounter('subject_code', 'codeCount', 'codeCounter');
+        updateCharCounter('subject_name', 'nameCount', 'nameCounter');
+    });
+    
+    // Update character counter
+    function updateCharCounter(inputId, countId, counterId) {
+        const input = document.getElementById(inputId);
+        const countSpan = document.getElementById(countId);
+        const counter = document.getElementById(counterId);
+        const maxLength = input.getAttribute('maxlength');
+        
+        const currentLength = input.value.length;
+        countSpan.textContent = currentLength;
+        
+        // Update counter styling based on length
+        counter.classList.remove('warning', 'danger');
+        if (currentLength > maxLength * 0.8) {
+            counter.classList.add('warning');
+        }
+        if (currentLength > maxLength * 0.9) {
+            counter.classList.add('danger');
+        }
+    }
+    
+    // Update live preview
+    function updatePreview() {
+        const codeInput = document.getElementById('subject_code');
+        const nameInput = document.getElementById('subject_name');
+        const previewCode = document.getElementById('previewCode');
+        const previewName = document.getElementById('previewName');
+        
+        previewCode.textContent = codeInput.value || codeInput.placeholder;
+        previewName.textContent = nameInput.value || nameInput.placeholder;
+    }
+    
+    // Reset form to original values
+    function resetForm() {
+        const form = document.getElementById('updateForm');
+        form.reset();
+        
+        // Reset button appearance
+        const submitBtn = form.querySelector('.btn-update');
+        submitBtn.classList.remove('btn-warning');
+        submitBtn.classList.add('btn-primary');
+        submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Update Subject';
+        
+        // Hide preview
+        document.getElementById('formPreview').style.display = 'none';
+        
+        // Reset avatar
+        const avatar = document.querySelector('.subject-avatar');
+        const originalCode = "{{ subject.subject_code }}";
+        if (originalCode.length >= 2) {
+            avatar.textContent = originalCode.slice(0, 2).toUpperCase();
+        } else {
+            avatar.innerHTML = '<i class="fas fa-book"></i>';
+        }
+        
+        // Reset character counters
+        updateCharCounter('subject_code', 'codeCount', 'codeCounter');
+        updateCharCounter('subject_name', 'nameCount', 'nameCounter');
+        
+        // Reset preview
+        updatePreview();
+    }
+    
+    // Confirm before leaving if there are unsaved changes
+    window.addEventListener('beforeunload', function(e) {
+        const form = document.getElementById('updateForm');
+        const inputs = form.querySelectorAll('input');
+        let hasChanges = false;
+        
+        inputs.forEach(input => {
+            if (input.value !== input.defaultValue) {
+                hasChanges = true;
+            }
+        });
+        
+        if (hasChanges) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+</script>
+{% endblock %}

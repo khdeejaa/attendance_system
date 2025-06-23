@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Student - School Management{% endblock %}
+
+{% block page_title %}Add New Student{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user-plus me-2"></i>
+                    Student Registration Form
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Add Student Form -->
+                <form method="POST" action="{% url 'add_student' %}">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="studentId" class="form-label">
+                                    <i class="fas fa-id-card me-1"></i>
+                                    Student ID
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="studentId" 
+                                       name="studentId" 
+                                       required 
+                                       placeholder="Enter Student ID">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="studentName" class="form-label">
+                                    <i class="fas fa-user me-1"></i>
+                                    Student Name
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="studentName" 
+                                       name="studentName" 
+                                       required 
+                                       placeholder="Enter Student Name">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="studentPassword" class="form-label">
+                                    <i class="fas fa-lock me-1"></i>
+                                    Password
+                                </label>
+                                <input type="password" 
+                                       class="form-control" 
+                                       id="studentPassword" 
+                                       name="studentPassword" 
+                                       required 
+                                       placeholder="Enter Password">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="classSelect" class="form-label">
+                                    <i class="fas fa-users me-1"></i>
+                                    Select Class
+                                </label>
+                                <select class="form-select" id="classSelect" name="class_assigned" required>
+                                    <option value="">Select a class...</option>
+                                    {% for class in classes %}
+                                        <option value="{{ class.id }}">{{ class.class_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-plus me-2"></i>
+                            Add Student
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+       
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Form validation
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const studentId = document.getElementById('studentId');
+        const studentName = document.getElementById('studentName');
+        const studentPassword = document.getElementById('studentPassword');
+        
+        // Student ID validation
+        studentId.addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+        
+        // Password strength indication
+        studentPassword.addEventListener('input', function() {
+            const password = this.value;
+            const strength = getPasswordStrength(password);
+            
+            // Remove existing feedback
+            const existingFeedback = this.parentNode.querySelector('.password-feedback');
+            if (existingFeedback) {
+                existingFeedback.remove();
+            }
+            
+            // Add new feedback
+            if (password.length > 0) {
+                const feedback = document.createElement('div');
+                feedback.className = `password-feedback small mt-1 text-${strength.color}`;
+                feedback.innerHTML = `<i class="fas fa-shield-alt me-1"></i>${strength.text}`;
+                this.parentNode.appendChild(feedback);
+            }
+        });
+        
+        // Form submission validation
+        form.addEventListener('submit', function(e) {
+            const password = studentPassword.value;
+            if (password.length < 6) {
+                e.preventDefault();
+                alert('Password must be at least 6 characters long');
+                studentPassword.focus();
+                return false;
+            }
+        });
+    });
+    
+    function getPasswordStrength(password) {
+        if (password.length < 6) {
+            return { color: 'danger', text: 'Password too short' };
+        } else if (password.length < 8) {
+            return { color: 'warning', text: 'Password strength: Weak' };
+        } else if (password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)) {
+            return { color: 'success', text: 'Password strength: Strong' };
+        } else {
+            return { color: 'info', text: 'Password strength: Medium' };
+        }
+    }
+</script>
+{% endblock %}

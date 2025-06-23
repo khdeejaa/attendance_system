@@ -1,0 +1,343 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Subject - School Management System{% endblock %}
+
+{% block page_title %}Add New Subject{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .form-header {
+        border-bottom: 3px solid #007bff;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .form-header h3 {
+        color: #2c3e50;
+        margin: 0;
+        font-weight: 600;
+    }
+    
+    .form-header p {
+        color: #6c757d;
+        margin: 5px 0 0 0;
+        font-size: 0.95rem;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+    }
+    
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        padding: 12px 15px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    .form-control:invalid {
+        border-color: #dc3545;
+    }
+    
+    .form-control:valid {
+        border-color: #28a745;
+    }
+    
+    .input-group-text {
+        background-color: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-right: none;
+        color: #6c757d;
+    }
+    
+    .input-group .form-control {
+        border-left: none;
+    }
+    
+    .input-group:focus-within .input-group-text {
+        border-color: #007bff;
+        background-color: #e7f3ff;
+        color: #007bff;
+    }
+    
+    .btn-submit {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        border: none;
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+    }
+    
+    .btn-submit:hover {
+        background: linear-gradient(135deg, #218838, #1e9e8a);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+    }
+    
+    .btn-submit:active {
+        transform: translateY(0);
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .help-text {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+    
+    .required-indicator {
+        color: #dc3545;
+        font-weight: bold;
+    }
+    
+    .success-animation {
+        animation: slideInDown 0.5s ease-out;
+    }
+    
+    @keyframes slideInDown {
+        from {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    
+    .form-preview {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 15px;
+        margin-top: 20px;
+        display: none;
+    }
+    
+    .preview-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 5px;
+    }
+    
+    .preview-value {
+        color: #007bff;
+        font-family: monospace;
+        background-color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        border: 1px solid #dee2e6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Form Container -->
+<div class="form-container">
+    <div class="form-header">
+        <h3>
+            <i class="fas fa-plus-circle text-primary me-2"></i>
+            Add New Subject
+        </h3>
+        <p>Fill in the details below to add a new subject to the system</p>
+    </div>
+    
+    <!-- Subject Form -->
+    <form method="POST" action="{% url 'add_subject' %}" id="subjectForm">
+        {% csrf_token %}
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="subjectCode" class="form-label">
+                        <i class="fas fa-hashtag me-1"></i>
+                        Subject Code <span class="required-indicator">*</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-code"></i>
+                        </span>
+                        <input type="text" 
+                               class="form-control" 
+                               id="subjectCode" 
+                               name="subject_code" 
+                               placeholder="e.g., CS101, MATH201"
+                               required
+                               maxlength="10"
+                               pattern="[A-Z]{2,4}[0-9]{2,3}"
+                               title="Enter a valid subject code (e.g., CS101, MATH201)">
+                    </div>
+                    <div class="help-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Use format: 2-4 letters followed by 2-3 numbers (e.g., CS101)
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="subjectName" class="form-label">
+                        <i class="fas fa-book me-1"></i>
+                        Subject Name <span class="required-indicator">*</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-bookmark"></i>
+                        </span>
+                        <input type="text" 
+                               class="form-control" 
+                               id="subjectName" 
+                               name="subject_name" 
+                               placeholder="e.g., Computer Science Fundamentals"
+                               required
+                               maxlength="100"
+                               minlength="3">
+                    </div>
+                    <div class="help-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Enter the full name of the subject (3-100 characters)
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form Preview -->
+        <div class="form-preview" id="formPreview">
+            <h6 class="preview-label">
+                <i class="fas fa-eye me-1"></i>
+                Preview:
+            </h6>
+            <div class="row">
+                <div class="col-md-6">
+                    <small class="preview-label">Subject Code:</small>
+                    <div class="preview-value" id="previewCode">-</div>
+                </div>
+                <div class="col-md-6">
+                    <small class="preview-label">Subject Name:</small>
+                    <div class="preview-value" id="previewName">-</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success btn-submit">
+                <i class="fas fa-plus me-2"></i>
+                Add Subject
+            </button>
+            
+            <button type="reset" class="btn btn-outline-secondary" onclick="resetPreview()">
+                <i class="fas fa-undo me-2"></i>
+                Reset Form
+            </button>
+            
+        </div>
+    </form>
+</div>
+
+
+    
+   
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add active class to the current menu item
+        const addSubjectLink = document.querySelector('a[href*="add_subject"]');
+        if (addSubjectLink) {
+            addSubjectLink.classList.add('active');
+        }
+        
+        // Auto-expand the subjects submenu
+        const subjectsCollapse = document.getElementById('subjectsCollapse');
+        if (subjectsCollapse) {
+            subjectsCollapse.classList.add('show');
+            const subjectsToggle = document.querySelector('[data-bs-toggle="collapse"][href="#subjectsCollapse"]');
+            if (subjectsToggle) {
+                subjectsToggle.classList.remove('collapsed');
+                subjectsToggle.setAttribute('aria-expanded', 'true');
+            }
+        }
+        
+        // Form preview functionality
+        const subjectCodeInput = document.getElementById('subjectCode');
+        const subjectNameInput = document.getElementById('subjectName');
+        const formPreview = document.getElementById('formPreview');
+        const previewCode = document.getElementById('previewCode');
+        const previewName = document.getElementById('previewName');
+        
+        function updatePreview() {
+            const code = subjectCodeInput.value.trim();
+            const name = subjectNameInput.value.trim();
+            
+            if (code || name) {
+                formPreview.style.display = 'block';
+                previewCode.textContent = code || '-';
+                previewName.textContent = name || '-';
+            } else {
+                formPreview.style.display = 'none';
+            }
+        }
+        
+        subjectCodeInput.addEventListener('input', updatePreview);
+        subjectNameInput.addEventListener('input', updatePreview);
+        
+        // Auto-uppercase subject code
+        subjectCodeInput.addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+        
+        // Form submission handling
+        document.getElementById('subjectForm').addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('.btn-submit');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Adding Subject...';
+            submitBtn.disabled = true;
+        });
+        
+        // Success message animation
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.classList.add('success-animation');
+        });
+    });
+    
+    function resetPreview() {
+        document.getElementById('formPreview').style.display = 'none';
+        document.getElementById('previewCode').textContent = '-';
+        document.getElementById('previewName').textContent = '-';
+    }
+</script>
+{% endblock %}
